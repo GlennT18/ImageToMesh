@@ -9,3 +9,5 @@ pip install
 -transformers
 -open3d
 
+# need to create a hugging face account and get access token to use models
+
