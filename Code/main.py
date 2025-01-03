@@ -94,6 +94,20 @@ for v in range(height):
         points.append([X, Y, Z])
 
 pcd.points = o3d.utility.Vector3dVector(np.array(points))
-o3d.visualization.draw_geometries([pcd])
+#o3d.visualization.draw_geometries([pcd])
 #************************************************************************************************************************************************
 
+#Post processing 3D point cloud
+cl, index = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=20.0)
+pcd = pcd.select_by_index(index)
+pcd.estimate_normals()
+
+#o3d.visualization.draw_geometries([pcd])
+
+#surface reconstructions
+mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=10, n_threads=1)[0]
+#mesh.paint_uniform_color(np.array([[0.5],[0.5],[0.5]]))
+o3d.visualization.draw_geometries([mesh], mesh_show_back_face=False)
+
+#exporting mesh
+o3d.io.write_triangle_mesh('../Results/bird.obj', mesh)
